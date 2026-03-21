@@ -1,0 +1,112 @@
+[TITLE]
+;;Project Title/Notes
+Example EPA SWMM model with a biofilter (bioretention cell) LID.
+
+[OPTIONS]
+FLOW_UNITS           CFS
+INFILTRATION         GREEN_AMPT
+FLOW_ROUTING         DYNWAVE
+START_DATE           03/21/2026
+START_TIME           00:00:00
+REPORT_START_DATE    03/21/2026
+REPORT_START_TIME    00:00:00
+END_DATE             03/22/2026
+END_TIME             00:00:00
+SWEEP_START          01/01
+SWEEP_END            12/31
+DRY_DAYS             5
+REPORT_STEP          00:05:00
+WET_STEP             00:01:00
+DRY_STEP             01:00:00
+ROUTING_STEP         00:00:30
+ALLOW_PONDING        NO
+INERTIAL_DAMPING     PARTIAL
+VARIABLE_STEP        0.75
+NORMAL_FLOW_LIMITED  BOTH
+SKIP_STEADY_STATE    NO
+FORCE_MAIN_EQUATION  H-W
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+IGNORE_RAINFALL      NO
+
+[EVAPORATION]
+CONSTANT 0.0
+DRY_ONLY NO
+
+[RAINGAGES]
+;;Name           Format    Interval SCF      Source
+RG1              INTENSITY 0:05     1.0      TIMESERIES TS1
+
+[TIMESERIES]
+;;Name           Date       Time     Value
+TS1              03/21/2026 00:00    0.00
+TS1              03/21/2026 00:15    0.20
+TS1              03/21/2026 00:30    0.80
+TS1              03/21/2026 00:45    1.20
+TS1              03/21/2026 01:00    0.60
+TS1              03/21/2026 01:15    0.20
+TS1              03/21/2026 01:30    0.00
+
+[SUBCATCHMENTS]
+;;Name           Raingage   Outlet   Area     %Imperv  Width    Slope   CurbLen  SnowPack
+S1               RG1        J1       1.50     65       220      1.5     0
+
+[SUBAREAS]
+;;Subcatchment   N-Imperv   N-Perv   S-Imperv S-Perv   PctZero  RouteTo  PctRouted
+S1               0.015      0.200    0.05     0.15     25       OUTLET
+
+[INFILTRATION]
+;;Subcatchment   Suction    Ksat     IMD
+S1               3.5        0.50     0.20
+
+[JUNCTIONS]
+;;Name           Elevation  MaxDepth InitDepth SurDepth Aponded
+J1               100.00     6.00     0         0        0
+
+[OUTFALLS]
+;;Name           Elevation  Type       Stage Data       Gated Route To
+O1               98.50      FREE
+
+[CONDUITS]
+;;Name           From Node  To Node   Length   Roughness InOffset OutOffset InitFlow MaxFlow
+C1               J1         O1        150      0.013     0        0         0        0
+
+[XSECTIONS]
+;;Link           Shape      Geom1     Geom2    Geom3    Geom4    Barrels Culvert
+C1               CIRCULAR   1.50      0        0        0        1
+
+[LID_CONTROLS]
+;;Name           Type/Layer Parameters
+BIOFILTER        BC
+BIOFILTER        SURFACE    6        0.10     0        0        0
+BIOFILTER        SOIL       18       0.45     0.20     0.10     2.0      10.0     3.5
+BIOFILTER        STORAGE    12       0.40     0.50     0
+BIOFILTER        DRAIN      0.35     0.50     3.0      0
+
+[LID_USAGE]
+;;Subcatchment   LIDProcess Number  Area    Width InitSat FromImp ToPerv RptFile DrainTo FromPerv
+S1               BIOFILTER  1       400     0     0       25      0      *       J1      0
+
+[REPORT]
+INPUT      YES
+CONTROLS   YES
+SUBCATCHMENTS ALL
+NODES      ALL
+LINKS      ALL
+LID        ALL
+
+[COORDINATES]
+;;Node           X-Coord   Y-Coord
+J1               1000      1000
+O1               1150      1000
+
+[VERTICES]
+;;Link           X-Coord   Y-Coord
+C1               1075      1000
+
+[Polygons]
+;;Subcatchment   X-Coord   Y-Coord
+S1               900       950
+S1               900       1050
+S1               1030      1050
+S1               1030      950

@@ -203,7 +203,7 @@ const IMG={"g1": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQY
    models: {2:"erosion", 3:"flood", ...}   q2: ["erosion","sealing",...]   q3: kg/yr   q4: decares */
 const SHOW_ANSWERS=false; // false = results never reveal the correct answers (only pass/fail + score)
 /* ===== PUBLIC VERSION: paste the Google Apps Script web-app URL here (see README). Empty = answers stay on each phone. ===== */
-const ENDPOINT="";
+const ENDPOINT="https://script.google.com/macros/s/AKfycbzTeq2gt_E6lk0nkDdiaPf-CayUaCAp5wLJplzDzJ8Ji-pwcK2b0oDOCzOnKNfUO8JMsQ/exec";
 const PASS_MARK=8;      // minimum number of correct answers to pass
 const TOL=0.25;         // Q3/Q4 count as correct if within ±25% of the key (Q3 ≈ 40 trucks, Q4 ≈ 250 fields, goal 280)
 /* PROVISIONAL key (my reading of the models) – confirm or edit. q3 (kg/yr) and q4 (decares) still needed. */

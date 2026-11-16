@@ -184,6 +184,7 @@
       <div class="sub" style="margin-top:12px" data-t="q4s"></div><div id="d4"></div>
       <div class="sub" style="margin-top:12px" data-t="q4gs"></div><div id="d4g"></div>
     
+    <div class="card hide" id="kcard"><h2 data-t="kh"></h2><div id="kans"></div></div>
     <div class="card hide" id="ccard"><h2 data-t="ch"></h2><div id="clist"></div></div>
     <div class="card hide" id="rcard"><h2 data-t="rk"></h2><div id="rank"></div></div>
     <div class="nav"><button class="btn sec" id="redo" data-t="redo"></button></div>
@@ -244,7 +245,7 @@ const T={
   rh:"Results",votes:"participants",avgl:"average rating",scorel:"your score",r1:"Q1 · What the group thinks each model is",r2:"Q2 · Most common threats in Norway (group votes)",r3:"Q3 & Q4 · Group estimates",
   q3s:"Q3 · Mørdre soil loss (trucks of 25 t / yr) – group answers",q4s:"Q4 · Area lost (football fields) – group answers",q4gs:"Q4 · Political goal (football fields) – group answers",med:"group median",you:"you",ch:"Comments",yr:"year",dec:"decares",
   back:"← Back",next:"Next →",submit:"See my score",update:"Update answers",redo:"Change my answers",type:"Type your answer…",healthy:"Healthy soil, no threat",
-  q1cnt:(a,b)=>`${a} of ${b} answered`,offline:"Could not reach the results server – you can still answer.",rk:"Ranking · best scores",anon:"Anonymous",passT:"You passed!",failT:"Not this time",vsub:(a,b,m)=>`${a} of ${b} correct · you need at least ${m} to pass`,whol:"Name or email (optional)",whop:"Your name or email…",q2cnt:a=>`${a} of 4 used`,steps:["Q1","Q2","Q3","Q4","Vote","Results"],
+  kh:"Correct answers · Q2, Q3 and Q4",kq2:"Q2 · Most common threats in Norway",kq3:"Q3 · Mørdre soil loss (trucks of 25 t / yr)",kq4:"Q4 · Area lost (football fields)",kq4g:"Q4 · Political goal (football fields)",q1cnt:(a,b)=>`${a} of ${b} answered`,offline:"Could not reach the results server – you can still answer.",rk:"Ranking · best scores",anon:"Anonymous",passT:"You passed!",failT:"Not this time",vsub:(a,b,m)=>`${a} of ${b} correct · you need at least ${m} to pass`,whol:"Name or email (optional)",whop:"Your name or email…",q2cnt:a=>`${a} of 4 used`,steps:["Q1","Q2","Q3","Q4","Vote","Results"],
   signin:"Sign in to Claude to submit and see group results.",standalone:"Standalone mode: answers are saved in this browser only.",err:"Could not save. Try again.",
   ok:"✔ correct",bad:"✘ answer: ",scoreOf:(a,b)=>`${a} / ${b}`,hint:"≈ ",top:"top answer",noData:"No answers yet"},
  no:{tag:"Jordhelse i 4 spørsmål · NIBIO",q1h:"Spørsmål 1 · Hvilken trussel viser hver modell?",q1p:"Jordprofiler har en humusrik A-horisont (svart) over en B-horisont (brun) og opphavsmateriale (C-horisont, gul). Trykk på et nummer (eller et bilde) og skriv hva hver av de 8 modellene viser: en trussel mot jordhelsen, eller sunn jord.",
@@ -255,7 +256,7 @@ const T={
   rh:"Resultater",votes:"deltakere",avgl:"snittvurdering",scorel:"din poengsum",r1:"Spm. 1 · Hva gruppa tror hver modell er",r2:"Spm. 2 · Vanligste trusler i Norge (gruppas stemmer)",r3:"Spm. 3 og 4 · Gruppas anslag",
   q3s:"Spm. 3 · Jordtap Mørdre (lastebiler à 25 t / år) – gruppas svar",q4s:"Spm. 4 · Areal tapt (fotballbaner) – gruppas svar",q4gs:"Spm. 4 · Politisk mål (fotballbaner) – gruppas svar",med:"gruppemedian",you:"du",ch:"Kommentarer",yr:"år",dec:"dekar",
   back:"← Tilbake",next:"Neste →",submit:"Se poengsummen",update:"Oppdater svar",redo:"Endre svarene mine",type:"Skriv svaret ditt…",healthy:"Sunn jord, ingen trussel",
-  q1cnt:(a,b)=>`${a} av ${b} besvart`,offline:"Fikk ikke kontakt med resultatserveren – du kan likevel svare.",rk:"Rangering · beste resultater",anon:"Anonym",passT:"Du besto!",failT:"Ikke denne gangen",vsub:(a,b,m)=>`${a} av ${b} riktige · du trenger minst ${m} for å bestå`,whol:"Navn eller e-post (valgfritt)",whop:"Navn eller e-post…",q2cnt:a=>`${a} av 4 brukt`,steps:["Spm 1","Spm 2","Spm 3","Spm 4","Stem","Resultat"],
+  kh:"Riktige svar · Q2, Q3 og Q4",kq2:"Q2 · Vanligste trusler i Norge",kq3:"Q3 · Jordtap i Mørdre (lastebiler à 25 t / år)",kq4:"Q4 · Areal tapt (fotballbaner)",kq4g:"Q4 · Politisk mål (fotballbaner)",q1cnt:(a,b)=>`${a} av ${b} besvart`,offline:"Fikk ikke kontakt med resultatserveren – du kan likevel svare.",rk:"Rangering · beste resultater",anon:"Anonym",passT:"Du besto!",failT:"Ikke denne gangen",vsub:(a,b,m)=>`${a} av ${b} riktige · du trenger minst ${m} for å bestå`,whol:"Navn eller e-post (valgfritt)",whop:"Navn eller e-post…",q2cnt:a=>`${a} av 4 brukt`,steps:["Spm 1","Spm 2","Spm 3","Spm 4","Stem","Resultat"],
   signin:"Logg inn på Claude for å sende inn og se gruppas resultater.",standalone:"Frittstående modus: svar lagres kun i denne nettleseren.",err:"Kunne ikke lagre. Prøv igjen.",
   ok:"✔ riktig",bad:"✘ svar: ",scoreOf:(a,b)=>`${a} / ${b}`,hint:"≈ ",top:"vanligste svar",noData:"Ingen svar ennå"}
 };
@@ -465,6 +466,13 @@ function renderResults(){
     let fb="";if(key&&SHOW_ANSWERS)fb=canon(mine)===canon(key)?` <span style="color:var(--green)">${T[lang].ok}</span>`:` <span style="color:var(--red)">${T[lang].bad}${esc(label(canon(key)))}</span>`;
     r1.insertAdjacentHTML("beforeend",`<div class="rm"><img src="${IMG["m"+m.n]}" alt=""><div><b>${m.n}.</b> ${top?`${esc(ALL.some(t=>t[0]===top[0])?tn(top[0]):raw[top[0]])} <span class="hint">(${Math.round(top[1]/tot*100)}% · ${T[lang].top})</span>`:T[lang].noData}<div class="hint">${mine?esc(label(canon(mine))):""}${fb}</div></div></div>`);
   });
+  {const sc2=myScore(),kc=$("kcard");kc.classList.toggle("hide",!sc2);
+   if(sc2){const row=(t,v,ok)=>`<div class="rm" style="margin:6px 0"><div><b>${t}</b><div>${v} <span style="color:${ok?"var(--green)":"var(--red)"}">${ok?"✔":"✘"}</span></div></div></div>`;
+    const q2ok=ANSWERS.q2.map(canon),mq=q2items().map(canon);
+    $("kans").innerHTML=row(T[lang].kq2,ANSWERS.q2.map(k=>esc(label(canon(k)))).join(", "),mq.length>0&&q2ok.every(k=>mq.includes(k))&&mq.length===q2ok.length)
+     +row(T[lang].kq3,fmt(ANSWERS.q3),A.q3===ANSWERS.q3)
+     +row(T[lang].kq4,fmt(ANSWERS.q4),A.q4===ANSWERS.q4)
+     +row(T[lang].kq4g,fmt(ANSWERS.q4g),A.q4g===ANSWERS.q4g)}}
   const c2={},raw2={};
   votes.forEach(v=>(v.answers&&v.answers.q2||[]).forEach(t=>{const k=canon(t);if(k){c2[k]=(c2[k]||0)+1;raw2[k]=raw2[k]||String(t)}}));
   const keys=Object.keys(c2).sort((a,b)=>c2[b]-c2[a]);if(!keys.length)$("r2").innerHTML=T[lang].noData;

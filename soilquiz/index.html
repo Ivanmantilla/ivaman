@@ -293,7 +293,9 @@ function buildQ1(){
     {
       const sel=document.createElement("select");sel.id="inp"+m.n;sel.className="mc";
       sel.innerHTML=`<option value="">${T[lang].choose}</option>`+ALL.map(t=>`<option value="${t[0]}">${t[lang==="en"?1:2]}</option>`).join("");
+      if(m.n===1)A.m[1]="healthy";
       sel.value=canon(A.m[m.n])||"";
+      if(m.n===1){sel.disabled=true;sel.title="Given as example";}
       sel.onchange=()=>{if(sel.value)A.m[m.n]=sel.value;else delete A.m[m.n];paintQ1()};
       sel.onfocus=()=>setAct(m.n);
       d.appendChild(sel);
